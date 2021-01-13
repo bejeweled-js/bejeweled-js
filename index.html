@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jogo Bejeweled</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/jgthms/minireset.css@master/minireset.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&family=Roboto:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link href="style/style.css" rel="stylesheet" />
+    <script src="bejeweled.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="score-container" style="display: none;">
+        Pontos :
+        <div id="score">0</div>
+      </div>
+      <div class="background-img">
+        <div class="menu" id="menu">
+          <a class="btn" id="start-game">Novo jogo</a><br>
+        </div>
+        <canvas id="bejeweled" style="display: none;"></canvas>
+      </div>
+    </div>
+  </body>
+</html>
