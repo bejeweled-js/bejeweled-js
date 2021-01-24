@@ -272,7 +272,7 @@ class Game {
       this.board.printBoard();
       console.log(`\nPontos: ${this.board.score}`);
       let answer = await read(
-        "\nEntre com as posições i e j separadas por espaço"
+        "\nEntre com as posições i (linha) e j (coluna) separadas por espaço"
       );
       const { i, j, error } = this.parsePosition(answer);
       if (error) {
@@ -314,7 +314,7 @@ class Game {
           if (matches.length === 0) {
             console.log("Não há match! ");
             // desfaz a troca
-            this.board.swapJewel(i, j, m, n);
+            this.board.swapJewels(i, j, m, n);
             continue loop2;
           } else {
             // remove joias de mesmo tipo
