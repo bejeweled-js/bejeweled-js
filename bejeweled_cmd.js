@@ -277,7 +277,7 @@ class Game {
       );
       const { i, j, error } = this.parsePosition(answer);
       if (error) {
-        console.log("Posição inválida!\n");
+        console.log(`Posição inválida! Os valores de i e j devem variar entre 0 e ${this.board.gridSize - 1}\n`);
         continue;
       }
       loop2: do {
