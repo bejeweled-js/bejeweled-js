@@ -244,7 +244,8 @@ class Game {
   }
 
   validPosition(i, j) {
-    const boardSize = this.board.boardSize;
+    const boardSize = this.board.gridSize;
+
     if (i < 0 || i >= boardSize || j < 0 || j >= boardSize) {
       return false;
     }
@@ -330,7 +331,7 @@ class Game {
             break loop2;
           }
         } else {
-          console.log(`Não é possível mover peça para ${answer}`);
+          console.log(`Não é possível mover para ${answer}`);
         }
       } while (true);
     } while (true);
