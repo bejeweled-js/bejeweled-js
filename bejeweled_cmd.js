@@ -254,7 +254,7 @@ class Game {
 
   parsePosition(answer) {
     const resp = /(\d+)\s+(\d+)/.exec(answer);
-    if (resp.length > 0) {
+    if (resp) {
       const i = +resp[1];
       const j = +resp[2];
       if (!this.validPosition(i, j)) {
@@ -277,7 +277,7 @@ class Game {
       );
       const { i, j, error } = this.parsePosition(answer);
       if (error) {
-        console.log(`Posição inválida! Os valores de i e j devem variar entre 0 e ${this.board.gridSize - 1}\n`);
+        console.log(`Posição inválida! Os valores de i (linha) e j (coluna) devem variar entre 0 e ${this.board.gridSize - 1} e devem estar separados por espaço!\n`);
         continue;
       }
       loop2: do {
@@ -338,5 +338,5 @@ class Game {
   }
 }
 
-const game = new Game(8);
+const game = new Game(15);
 game.start();
