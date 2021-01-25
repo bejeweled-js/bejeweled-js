@@ -44,11 +44,14 @@ class Board {
     for (let j = 0; j < this.gridSize; ++j) {
       str += ` ${j}`;
     }
-    console.log(str);
+    this.gridSize >= 10 ? console.log(" " + str) : console.log(str);
+
     for (let i = 0; i < this.gridSize; ++i) {
       str = `${i} `;
+      if (this.gridSize >= 10 && i < 10) str += " ";
       for (let j = 0; j < this.gridSize; ++j) {
         if (this.grid[i][j]) {
+          if (j >= 10) str += " ";
           str += ` ${this.grid[i][j].type.symbol}`;
         } else {
           str += "  ";
