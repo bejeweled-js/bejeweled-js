@@ -42,7 +42,6 @@ const JewelType = {
   GREEN2: {
     src: "images/green2.png",
   }, */
-  NOIMAGE: {},
 };
 
 const squareUnit = 70; // cada quadradinho tem 70px por 70px
@@ -58,8 +57,6 @@ jewelKeys.forEach((type) => {
     JewelType[type]["image"] = image;
   }
 });
-
-jewelKeys.splice(jewelKeys.indexOf("NOIMAGE"), 1);
 
 class Jewel {
   constructor(i, j, type, offset = 0) {
@@ -145,7 +142,7 @@ class Board {
       // tenta trocar uma joia com outra
       if (this.selectedCol !== -1 && this.selectedRow !== -1) {
         if (
-          this.swap(
+          this.swapJewels(
             this.selectedRow,
             this.selectedCol,
             newSelectedRow,
@@ -158,7 +155,7 @@ class Board {
             this.selectedRow = -1;
           } else {
             // desfaz a troca se não há match
-            this.swap(
+            this.swapJewels(
               newSelectedRow,
               newSelectedCol,
               this.selectedRow,
@@ -172,7 +169,7 @@ class Board {
       }
     }
   }
-  swap(i, j, m, n) {
+  swapJewels(i, j, m, n) {
     const firstJewel = this.grid[i][j];
     const secondJewel = this.grid[m][n];
     if (firstJewel.isAdj(secondJewel)) {
@@ -263,6 +260,23 @@ class Board {
     return matches;
   }
 
+  fillWithNewJewels() {
+    for (let j = 0; j < this.gridSize; ++j) {
+      const newJewels = [];
+      for (let i = 0; i < this.gridSize; ++i) {
+        if (this.grid[i][j] === null) {
+          const jewel = this.newJewel(i, j);
+          this.grid[i][j] = jewel;
+          newJewels.push(jewel);
+        }
+      }
+
+      newJewels.forEach((jewel) => {
+        jewel.offset = squareUnit * newJewels.length;
+      });
+    }
+  }
+
   gameLoop() {
     this.now = Date.now();
     this.delta = this.now - this.then;
@@ -282,7 +296,8 @@ class Board {
             0
           );
           this.scoreElem.textContent = this.score;
-          this.rearrangeJewels(matches);
+          this.moveJewelsDown();
+          this.fillWithNewJewels();
         }
       }
       // limpa canvas
@@ -321,11 +336,7 @@ class Board {
       let matchGroups = matches[i];
       for (let k = 0; k < matchGroups.length; ++k) {
         const match = matchGroups[k];
-        this.grid[match.i][match.j] = new Jewel(
-          match.i,
-          match.j,
-          JewelType.NOIMAGE
-        );
+        this.grid[match.i][match.j] = null;
       }
     }
   }
@@ -340,69 +351,19 @@ class Board {
     }
   }
 
-  moveJewel(jewel, m, n, offset) {
-    jewel.i = m;
-    jewel.j = n;
-    jewel.offset = offset;
-    this.grid[m][n] = jewel;
-  }
-
-  addRow(minJ, maxJ) {
-    for (let j = minJ; j <= maxJ; ++j) {
-      this.grid[0][j] = this.newJewel(0, j, squareUnit * 2);
-    }
-  }
-
-  addCol(j, n) {
-    for (let i = 0; i < n; ++i) {
-      this.grid[i][j] = this.newJewel(i, j, squareUnit * i);
-    }
-  }
-
-  rearrangeJewels(matches) {
-    for (let k = 0; k < matches.length; ++k) {
-      console.log("GRID", JSON.parse(JSON.stringify(this.grid)), matches);
-      const group = matches[k];
-      // agrupamento horizontal
-      if (group.length >= 3) {
-        if (group[0].i === group[1].i) {
-          console.log("GROUP hr => ", JSON.parse(JSON.stringify(group)));
-          const i = group[0].i;
-          if (i !== 0) {
-            for (let j = 0; j < group.length; ++j) {
-              const col = group[j].j;
-              for (let x = i - 1; x >= 0; --x) {
-                console.log(`GROUP hr => mov ${x},${col} => ${x + 1}, ${col}`);
-                this.moveJewel(this.grid[x][col], x + 1, col, squareUnit);
-              }
-            }
-          }
-          console.log(
-            `GROUP hr => add ${group[0].j} ${group[group.length - 1].j}`
-          );
-          this.addRow(group[0].j, group[group.length - 1].j);
-        } else {
-          // agrupamento vertical
-          let j = group[0].j;
-          let min = group[0].i;
-          console.log("GROUP vt => ", JSON.parse(JSON.stringify(group)));
-          for (let i = min - 1; i >= 0; --i) {
-            console.log(
-              `GROUP vt => mov ${i},${j} => ${i + group.length}, ${j}`
-            );
-            this.moveJewel(
-              this.grid[i][j],
-              i + group.length,
-              j,
-              squareUnit * group.length
-            );
-          }
-          console.log(`GROUP vt => add ${j} ${group.length}`);
-          this.addCol(j, group.length);
+  moveJewelsDown() {
+    for (let j = 0; j < this.gridSize; ++j) {
+      for (let i = this.gridSize - 1; i > 0; --i) {
+        if (this.grid[i][j] === null && this.grid[i - 1][j] !== null) {
+          const temp = this.grid[i - 1][j];
+          temp.i = i;
+          this.grid[i][j] = temp;
+          this.grid[i][j].offset += squareUnit;
+          this.grid[i - 1][j] = null;
+          i = this.gridSize;
         }
       }
     }
-    console.log("GROUP fim => ", JSON.parse(JSON.stringify(this.grid)));
   }
 
   newGame() {
