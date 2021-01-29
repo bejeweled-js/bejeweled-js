@@ -296,6 +296,7 @@ class Board {
             0
           );
           this.scoreElem.textContent = this.score;
+          this.recordScore(this.score);
           this.moveJewelsDown();
           this.fillWithNewJewels();
         }
@@ -329,6 +330,24 @@ class Board {
     // requestAnimationFrame é chamada pelo Browser
     // antes do próximo repaint acontecer
     requestAnimationFrame(this.gameLoop.bind(this));
+  }
+
+  recordScore(score) {
+    let scores = window.localStorage.getItem("scores");
+    if (!scores) {
+      window.localStorage.setItem("scores", JSON.stringify([score]));
+    } else {
+      scores = JSON.parse(scores);
+      for (let i = 0; i < scores.length; ++i) {
+        if (score > scores[i]) {
+          scores.splice(i, 0, score);
+          if (scores.length > 5)
+            scores.pop();
+          window.localStorage.setItem("scores", JSON.stringify(scores));
+          break;
+        }
+      }
+    }
   }
 
   removeMatchGroups(matches) {
@@ -395,16 +414,43 @@ class Board {
   }
 }
 
+function createRow(pos, score) {
+  const div = document.createElement("div");
+  const div2 = document.createElement("div");
+  const div3 = document.createElement("div");
+  div2.classList.add("flex-cell");
+  div3.classList.add("flex-cell");
+  div.classList.add("flex-row")
+  div2.textContent = `${pos}${pos === '-' ? '' : 'º'}`;
+  div3.textContent = score;
+  div.appendChild(div2);
+  div.appendChild(div3);
+
+  return div;
+}
+
 // espera DOM carregar
 onDOMLoaded(() => {
   const canvas = document.getElementById("bejeweled");
   const startElem = document.getElementById("start-game");
   const menuElem = document.getElementById("menu");
   const scoreContainer = document.querySelector(".score-container");
+  const tableRecords = document.getElementById("table-records");
+  let scores = window.localStorage.getItem("scores");
+  if (scores) {
+    scores = JSON.parse(scores);
+    for (let i = 0; i < scores.length; ++i) {
+      tableRecords.appendChild(createRow(i + 1, scores[i]));
+    }
+  } else {
+    tableRecords.appendChild(createRow("-", "-"));
+  }
+
   startElem.addEventListener("click", () => {
     canvas.style.display = "";
     menuElem.style.display = "none";
     scoreContainer.style.display = "";
+    tableRecords.style.display = "none";
     audioBg.play();
     const board = new Board(8);
     board.newGame();

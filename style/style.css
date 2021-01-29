@@ -51,7 +51,7 @@ body {
 }
 .btn {
   font-family: "Roboto Condensed", sans-serif;
-  padding: 14px;
+  padding: 12px;
   color: #fff;
   background-color: #010625dd;
   border-radius: 5px;
@@ -62,4 +62,32 @@ body {
 .btn:hover {
   background-color: #051579dd;
   cursor: pointer;
+}
+
+.flex-container {
+  display: flex;
+  margin: 0 auto;
+  width: 30%;
+  color:#dbdef8;
+  align-items: center;
+  flex-direction: column;
+  font-family: "Roboto", sans-serif;
+  font-weight: 500;
+  font-size: 1.3rem;
+  border-radius: 5px;
+  background-color: #051579dd;
+  padding: 10px;
+}
+
+.flex-row {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+}
+
+.flex-cell {
+  flex: 1;
+  display: flex;
+  margin: 3px 30px;
+  justify-content: center;
 }
