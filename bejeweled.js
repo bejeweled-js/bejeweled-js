@@ -112,6 +112,8 @@ class Board {
     this.interval = 1000 / this.fps; // 16.6ms
     this.isAnimating = false;
     this.then = Date.now();
+    this.scores = this.loadScore();
+    this.scoreIndex = this.scores.length;
 
     for (let i = 0; i < gridSize; ++i) {
       this.grid[i] = [];
@@ -120,6 +122,12 @@ class Board {
       }
     }
     this.canvas.addEventListener("click", this.onClick.bind(this));
+    this.loadScore();
+  }
+
+  loadScore() {
+    let scores = window.localStorage.getItem("scores");
+    return scores ? JSON.parse(scores) : [];
   }
 
   // chamada ao clicar no canvas
@@ -333,21 +341,8 @@ class Board {
   }
 
   recordScore(score) {
-    let scores = window.localStorage.getItem("scores");
-    if (!scores) {
-      window.localStorage.setItem("scores", JSON.stringify([score]));
-    } else {
-      scores = JSON.parse(scores);
-      for (let i = 0; i < scores.length; ++i) {
-        if (score > scores[i]) {
-          scores.splice(i, 0, score);
-          if (scores.length > 5)
-            scores.pop();
-          window.localStorage.setItem("scores", JSON.stringify(scores));
-          break;
-        }
-      }
-    }
+    this.scores[this.scoreIndex] = score;
+    window.localStorage.setItem("scores", JSON.stringify(this.scores));
   }
 
   removeMatchGroups(matches) {
@@ -439,6 +434,11 @@ onDOMLoaded(() => {
   let scores = window.localStorage.getItem("scores");
   if (scores) {
     scores = JSON.parse(scores);
+    scores.sort((a, b) => b - a);
+    while (scores.length > 5) {
+      scores.pop();
+    }
+    window.localStorage.setItem("scores", JSON.stringify(scores));
     for (let i = 0; i < scores.length; ++i) {
       tableRecords.appendChild(createRow(i + 1, scores[i]));
     }
