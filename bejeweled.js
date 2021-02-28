@@ -122,7 +122,6 @@ class Board {
       }
     }
     this.canvas.addEventListener("click", this.onClick.bind(this));
-    this.loadScore();
   }
 
   loadScore() {
