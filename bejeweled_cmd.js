@@ -44,11 +44,14 @@ class Board {
     for (let j = 0; j < this.gridSize; ++j) {
       str += ` ${j}`;
     }
-    console.log(str);
+    this.gridSize >= 10 ? console.log(" " + str) : console.log(str);
+
     for (let i = 0; i < this.gridSize; ++i) {
       str = `${i} `;
+      if (this.gridSize >= 10 && i < 10) str += " ";
       for (let j = 0; j < this.gridSize; ++j) {
         if (this.grid[i][j]) {
+          if (j >= 10) str += " ";
           str += ` ${this.grid[i][j].type.symbol}`;
         } else {
           str += "  ";
@@ -244,7 +247,8 @@ class Game {
   }
 
   validPosition(i, j) {
-    const boardSize = this.board.boardSize;
+    const boardSize = this.board.gridSize;
+
     if (i < 0 || i >= boardSize || j < 0 || j >= boardSize) {
       return false;
     }
@@ -253,7 +257,7 @@ class Game {
 
   parsePosition(answer) {
     const resp = /(\d+)\s+(\d+)/.exec(answer);
-    if (resp.length > 0) {
+    if (resp) {
       const i = +resp[1];
       const j = +resp[2];
       if (!this.validPosition(i, j)) {
@@ -272,11 +276,11 @@ class Game {
       this.board.printBoard();
       console.log(`\nPontos: ${this.board.score}`);
       let answer = await read(
-        "\nEntre com as posições i e j separadas por espaço"
+        "\nEntre com as posições i (linha) e j (coluna) separadas por espaço"
       );
       const { i, j, error } = this.parsePosition(answer);
       if (error) {
-        console.log("Posição inválida!\n");
+        console.log(`Posição inválida! Os valores de i (linha) e j (coluna) devem variar entre 0 e ${this.board.gridSize - 1} e devem estar separados por espaço!\n`);
         continue;
       }
       loop2: do {
@@ -314,7 +318,7 @@ class Game {
           if (matches.length === 0) {
             console.log("Não há match! ");
             // desfaz a troca
-            this.board.swapJewel(i, j, m, n);
+            this.board.swapJewels(i, j, m, n);
             continue loop2;
           } else {
             // remove joias de mesmo tipo
@@ -330,12 +334,12 @@ class Game {
             break loop2;
           }
         } else {
-          console.log(`Não é possível mover peça para ${answer}`);
+          console.log(`Não é possível mover para ${answer}`);
         }
       } while (true);
     } while (true);
   }
 }
 
-const game = new Game(8);
+const game = new Game(15);
 game.start();
