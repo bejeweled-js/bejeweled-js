@@ -10,7 +10,7 @@ body {
 }
 
 .background-img {
-  background-image: url("../images/bg.webp");
+  background-image: url("../images/bg.png");
   height: 600px;
   width: 1000px;
   background-repeat: no-repeat;
