@@ -71,7 +71,7 @@ class Jewel {
       if (this.offset <= 0) {
         this.offset = 0;
       } else {
-        --this.offset;
+        this.offset -= 2;
       }
       ctx.drawImage(
         this.type.image,
