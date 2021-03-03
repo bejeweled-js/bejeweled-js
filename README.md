@@ -11,7 +11,7 @@
     <br />
     <a href="bejeweled_cmd.js">Jogo em linha de comando</a>
     ·
-    <a href="index.html">Jogo com interface</a>
+    <a href="https://bejeweled-js.github.io/bejeweled-js/index.html">Jogo com interface</a>
   </p>
 </p>
 
